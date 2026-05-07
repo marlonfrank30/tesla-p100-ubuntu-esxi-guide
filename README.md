@@ -1,4 +1,4 @@
-# Tesla P100 on Ubuntu 24.04/26.04 with ESXi 8 Passthrough
+# Tesla P100 on Ubuntu 26.04 with ESXi 8 Passthrough
 
 This repository documents the complete process of getting an NVIDIA Tesla P100 GPU working inside an Ubuntu VM running on VMware ESXi 8 using PCI passthrough.
 
@@ -21,7 +21,7 @@ The guide includes:
 |---|---|
 | Hypervisor | VMware ESXi 8 |
 | GPU | NVIDIA Tesla P100 PCIe 16GB |
-| Guest OS | Ubuntu Server 24.04 / 26.04 |
+| Guest OS | Ubuntu Server 26.04 |
 | VM Firmware | EFI |
 | CUDA | 12.x |
 | Driver Branch | 535/550/570 |
@@ -319,6 +319,33 @@ nvcc --version
 lsmod | grep nvidia
 ```
 
+## Verify the installation
+```bashmarlon@ai-server:~$ mokutil --sb-state
+sudo modprobe nvidia
+nvidia-smi
+SecureBoot disabled
+```
+[sudo: authenticate] Password:
+Thu May  7 23:24:23 2026
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.142                Driver Version: 580.142        CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla P100-PCIE-16GB           Off |   00000000:03:00.0 Off |                    0 |
+| N/A   51C    P0             29W /  250W |       0MiB /  16384MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
 ---
 
 # License
