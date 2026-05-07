@@ -320,11 +320,11 @@ lsmod | grep nvidia
 ```
 
 ## Verify the installation
-```bashmarlon@ai-server:~$ mokutil --sb-state
-sudo modprobe nvidia
-nvidia-smi
+```bash
+mokutil --sb-state
 SecureBoot disabled
-```
+nvidia-smi
+
 [sudo: authenticate] Password:
 Thu May  7 23:24:23 2026
 +-----------------------------------------------------------------------------------------+
@@ -346,7 +346,8 @@ Thu May  7 23:24:23 2026
 |=========================================================================================|
 |  No running processes found                                                             |
 +-----------------------------------------------------------------------------------------+
----
+```
+
 
 # License
 
