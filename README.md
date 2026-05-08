@@ -12,7 +12,6 @@ The guide includes:
 - Docker + NVIDIA runtime setup
 - Troubleshooting common issues
 - Validation/testing procedures
-- Mermaid architecture diagrams
 
 ---
 
