@@ -349,6 +349,9 @@ Thu May  7 23:24:23 2026
 ```
 
 
-# License
+# Products and References
+https://www.ebay.com/itm/197038986040
+https://www.ebay.com/itm/286365386696
+https://www.amazon.com/dp/B0CP7BNWZY
+https://www.amazon.com/dp/B0C8BS4MT6
 
-MIT
