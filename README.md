@@ -1,4 +1,4 @@
-# Tesla P100 on Ubuntu 24.04/26.04 with ESXi 8 Passthrough
+# Nvidia Tesla P100 GPU Card on Ubuntu 24.04/26.04 with ESXi 8 Passthrough
 
 This repository documents the complete process of getting an NVIDIA Tesla P100 GPU working inside an Ubuntu VM running on VMware ESXi 8 using PCI passthrough.
 
