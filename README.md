@@ -1,4 +1,4 @@
-# Tesla P100 on Ubuntu 26.04 with ESXi 8 Passthrough
+# Tesla P100 on Ubuntu 24.04/26.04 with ESXi 8 Passthrough
 
 This repository documents the complete process of getting an NVIDIA Tesla P100 GPU working inside an Ubuntu VM running on VMware ESXi 8 using PCI passthrough.
 
@@ -12,6 +12,31 @@ The guide includes:
 - Docker + NVIDIA runtime setup
 - Troubleshooting common issues
 - Validation/testing procedures
+- Mermaid architecture diagrams
+
+---
+
+# High-Level Architecture
+
+```mermaid
+flowchart TB
+
+A[Physical Server] --> B[VMware ESXi 8 Hypervisor]
+
+B --> C[Tesla P100 PCI Device]
+B --> D[Ubuntu 24.04/26.04 VM]
+
+C -. PCI Passthrough .-> D
+
+D --> E[NVIDIA Driver]
+E --> F[CUDA Toolkit]
+F --> G[Docker NVIDIA Runtime]
+G --> H[AI / ML Workloads]
+
+H --> I[PyTorch]
+H --> J[Ollama]
+H --> K[TensorFlow]
+```
 
 ---
 
@@ -21,10 +46,28 @@ The guide includes:
 |---|---|
 | Hypervisor | VMware ESXi 8 |
 | GPU | NVIDIA Tesla P100 PCIe 16GB |
-| Guest OS | Ubuntu Server 26.04 |
+| Guest OS | Ubuntu Server 24.04 / 26.04 |
 | VM Firmware | EFI |
 | CUDA | 12.x |
 | Driver Branch | 535/550/570 |
+
+---
+
+# NVIDIA Software Stack
+
+```mermaid
+flowchart TD
+
+A[Application Layer] --> B[PyTorch / TensorFlow / Ollama]
+
+B --> C[CUDA Libraries]
+
+C --> D[NVIDIA Driver]
+
+D --> E[Tesla P100 GPU]
+
+E --> F[GPU Compute Cores]
+```
 
 ---
 
@@ -49,6 +92,27 @@ Recommended additional settings:
 
 ---
 
+# ESXi GPU Passthrough Process
+
+```mermaid
+sequenceDiagram
+
+participant Admin
+participant ESXi
+participant VM
+participant GPU
+
+Admin->>ESXi: Enable PCI Passthrough
+ESXi->>GPU: Reserve GPU Device
+Admin->>VM: Attach PCI Device
+VM->>GPU: Detect Hardware via PCIe
+VM->>VM: Install NVIDIA Drivers
+VM->>GPU: Initialize CUDA
+GPU-->>VM: GPU Ready
+```
+
+---
+
 # Step-by-Step Guide
 
 ## 1. Enable Passthrough in ESXi
@@ -61,9 +125,6 @@ Recommended additional settings:
    - Tesla P100 Audio Device
 
 3. Reboot ESXi host
-
-Detailed instructions:
-- `docs/02-esxi-passthrough.md`
 
 ---
 
@@ -154,6 +215,27 @@ nvidia-smi
 
 ---
 
+# VM Boot + GPU Initialization
+
+```mermaid
+flowchart TD
+
+A[Power On VM]
+--> B[EFI Boot]
+
+B --> C[Ubuntu Kernel Loads]
+
+C --> D[NVIDIA Kernel Modules]
+
+D --> E[GPU Initialization]
+
+E --> F[CUDA Available]
+
+F --> G[nvidia-smi Works]
+```
+
+---
+
 ## 7. Install CUDA
 
 Add NVIDIA CUDA repository:
@@ -172,6 +254,23 @@ Verify:
 
 ```bash
 nvcc --version
+```
+
+---
+
+# Docker + GPU Runtime Flow
+
+```mermaid
+flowchart LR
+
+A[Docker Container]
+--> B[NVIDIA Container Toolkit]
+
+B --> C[NVIDIA Runtime]
+
+C --> D[CUDA Libraries]
+
+D --> E[Tesla P100 GPU]
 ```
 
 ---
@@ -204,6 +303,29 @@ docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu24.04 nvidia-smi
 
 ---
 
+# Full AI Inference Pipeline
+
+```mermaid
+flowchart LR
+
+A[User Prompt]
+--> B[LLM Application]
+
+B --> C[PyTorch]
+
+C --> D[CUDA]
+
+D --> E[NVIDIA Driver]
+
+E --> F[Tesla P100]
+
+F --> G[GPU Inference]
+
+G --> H[Generated Response]
+```
+
+---
+
 # Common Problems
 
 ## `nvidia-smi` fails
@@ -216,6 +338,28 @@ Usually caused by:
 - Missing memory reservation
 - Wrong driver version
 - GPU audio device not passed through
+
+---
+
+# Troubleshooting Decision Tree
+
+```mermaid
+flowchart TD
+
+A[nvidia-smi Fails] --> B{GPU visible in lspci?}
+
+B -- No --> C[Check ESXi Passthrough]
+B -- Yes --> D{Secure Boot Enabled?}
+
+D -- Yes --> E[Disable Secure Boot]
+D -- No --> F{Nouveau Disabled?}
+
+F -- No --> G[Blacklist Nouveau]
+F -- Yes --> H[Check MMIO Settings]
+
+H --> I[pciPassthru.use64bitMMIO=TRUE]
+I --> J[Reboot VM]
+```
 
 ---
 
@@ -267,32 +411,6 @@ print(torch.cuda.is_available())
 
 ---
 
-# References
-
-## NVIDIA Documentation
-
-- https://docs.nvidia.com/
-- https://developer.nvidia.com/cuda-downloads
-
-## ESXi + GPU Passthrough Resources
-
-- https://forums.developer.nvidia.com/t/dell-r730-and-tesla-p100-cuda-and-driver-install-information/50781
-- https://serverfault.com/questions/958239/pci-at-nvida-tesla-p-100-in-shared-pass-through-mode-is-disabled
-- https://ubuntu.com/server/docs/how-to/graphics/gpu-virtualization-with-qemu-kvm/
-- https://www.dell.com/support/kbdoc/en-ie/000106925/how-to-configure-a-gpu-using-discrete-device-assignment-dda-on-ubuntu-guest-operating-system
-
-## Community References
-
-- https://www.reddit.com/r/homelab/comments/1rb47ab/nvidia_tesla_p40_drivers_on_ubuntu_server_2404/
-- https://www.reddit.com/r/esxi/comments/1knrpy7/
-- https://www.reddit.com/r/PleX/comments/10jfo3m/
-
-## Original Discussion
-
-- https://claude.ai/chat/d1b4f2c2-bdb9-417d-8c6c-ff3fac9e03b5
-
----
-
 # Useful Commands
 
 ## Check GPU
@@ -318,6 +436,30 @@ nvcc --version
 ```bash
 lsmod | grep nvidia
 ```
+
+---
+
+# References
+
+## NVIDIA Documentation
+
+- https://docs.nvidia.com/
+- https://developer.nvidia.com/cuda-downloads
+
+## ESXi + GPU Passthrough Resources
+
+- https://forums.developer.nvidia.com/t/dell-r730-and-tesla-p100-cuda-and-driver-install-information/50781
+- https://serverfault.com/questions/958239/pci-at-nvida-tesla-p-100-in-shared-pass-through-mode-is-disabled
+- https://ubuntu.com/server/docs/how-to/graphics/gpu-virtualization-with-qemu-kvm/
+- https://www.dell.com/support/kbdoc/en-ie/000106925/how-to-configure-a-gpu-using-discrete-device-assignment-dda-on-ubuntu-guest-operating-system
+
+## Community References
+
+- https://www.reddit.com/r/homelab/comments/1rb47ab/nvidia_tesla_p40_drivers_on_ubuntu_server_2404/
+- https://www.reddit.com/r/esxi/comments/1knrpy7/
+- https://www.reddit.com/r/PleX/comments/10jfo3m/
+
+---
 
 ## Verify the installation
 ```bash
