@@ -125,8 +125,6 @@ GPU-->>VM: GPU Ready
 
 3. Reboot ESXi host
 
-Detailed instructions:
-- `docs/02-esxi-passthrough.md`
 ---
 
 ## 2. Configure VM
@@ -149,7 +147,6 @@ After installation:
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
-
 ---
 
 ## 4. Disable Nouveau
