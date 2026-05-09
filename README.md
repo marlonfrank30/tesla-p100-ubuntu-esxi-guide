@@ -391,6 +391,7 @@ Usually fixed by:
 ## GPU Status
 
 ```bash
+dkms status
 nvidia-smi
 ```
 
