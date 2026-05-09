@@ -435,10 +435,8 @@ nvcc --version
 ```bash
 lsmod | grep nvidia
 ```
-## Check Kernel Modules
+## Check Usage by LLM model
 ```bash
-ollama ps
-Expected output should show:
 ai-server:~$ ollama ps
 NAME                    ID              SIZE     PROCESSOR          CONTEXT    UNTIL
 glm-4.7-flash:latest    d1a8a26252f1    19 GB    17%/83% CPU/GPU    4096       4 minutes from now
