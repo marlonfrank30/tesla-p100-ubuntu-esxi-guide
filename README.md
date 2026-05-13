@@ -232,7 +232,6 @@ E --> F[CUDA Available]
 F --> G[nvidia-smi Works]
 ```
 
-Here's the Mermaid version. If you want the raw Mermaid source to drop into your own docs or a tool like Obsidian, Notion, or GitLab, here it is:
 
 # VM Boot + GPU Integration with Motherboard and CPU/BUS
 
