@@ -232,7 +232,30 @@ E --> F[CUDA Available]
 F --> G[nvidia-smi Works]
 ```
 
----
+Here's the Mermaid version. If you want the raw Mermaid source to drop into your own docs or a tool like Obsidian, Notion, or GitLab, here it is:
+
+# VM Boot + GPU Integration with Motherboard and CPU/BUS
+
+```mermaid
+flowchart TD
+    GPU0["GPU 0 — P100
+    11,130 MiB used · 77% util
+    188W · 76°C peak · PCIe 3.0 x16"]
+    GPU1["GPU 1 — P100
+    10,924 MiB used · 0% util
+    50W · 52°C idle · PCIe 3.0 x16"]
+    PHB["CPU Host Bridge
+    PHB — all traffic routes here
+    ⚠ 10–20% latency penalty"]
+    OLLAMA["Ollama — GLM-4.7 Flash
+    29.9B · Q4_K_M · 22 GB total
+    PID 347778 · 100% GPU offload"]
+
+    GPU0 -->|"Compute + tensor fetch"| PHB
+    GPU1 -->|"Tensor shards ~16 GB/s"| PHB
+    PHB -->|"Inference output"| OLLAMA
+```
+
 
 ## 7. Install CUDA
 
