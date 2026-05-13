@@ -393,6 +393,7 @@ Usually fixed by:
 ```bash
 dkms status
 nvidia-smi
+nvidia-smi topo -m
 ```
 
 ## CUDA Test
